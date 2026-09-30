@@ -7,6 +7,8 @@ using Mini_Task_Manager_API.Repositories;
 using Mini_Task_Manager_API.Repositories.Interfaces;
 using Mini_Task_Manager_API.Services;
 using Mini_Task_Manager_API.Services.Interfaces;
+using FluentValidation;
+using MiniTaskManager.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,10 +21,16 @@ builder.Services.AddSwaggerGen();
 
 // dependency injection
 builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<ITokenService,  TokenService>();
 
 // auto mapper
-builder.Services.AddAutoMapper(typeof(MappingProfiles));
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfiles>();
+});
+
+builder.Services.AddValidatorsFromAssemblyContaining<TaskCreateDtoValidator>();
 
 // jwt authentication
 var jwtkey = builder.Configuration["Jwt:Key"]!;
@@ -57,6 +65,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
