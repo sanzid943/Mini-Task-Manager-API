@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mini_Task_Manager_API.DTOs.Auth;
 using Mini_Task_Manager_API.Models;
@@ -27,7 +26,7 @@ namespace Mini_Task_Manager_API.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterDto dto)
         {
-            if (userRepository.UserNameExists(dto.UserName))
+            if (userRepository.UsernameExists(dto.username))
             {
                 return BadRequest(
                     new
@@ -39,14 +38,14 @@ namespace Mini_Task_Manager_API.Controllers
 
             var user = new User
             {
-                username = dto.UserName,
+                username = dto.username,
                 role = "user"
             };
 
             user.passwordHash =
                 passwordHasher.HashPassword(
                 user,
-                dto.Password
+                dto.password
                 );
 
             userRepository.Add(user);
@@ -62,7 +61,7 @@ namespace Mini_Task_Manager_API.Controllers
         [HttpPost("login")]
         public IActionResult Login(LoginDto dto)
         {
-            var user = userRepository.GetUserName(dto.Username);
+            var user = userRepository.GetByUsername(dto.username);
 
             if(user == null)
             {
@@ -77,7 +76,7 @@ namespace Mini_Task_Manager_API.Controllers
             var result = passwordHasher.VerifyHashedPassword(
                 user,
                 user.passwordHash,
-                dto.Password
+                dto.password
             );
 
             if (result == PasswordVerificationResult.Failed)
