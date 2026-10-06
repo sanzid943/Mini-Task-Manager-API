@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Mini_Task_Manager_API</RootNamespace>
+    <UserSecretsId>997319ea-a67c-43f0-ac88-6cd86d609149</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
